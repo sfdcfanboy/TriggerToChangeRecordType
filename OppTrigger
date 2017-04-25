@@ -1,0 +1,15 @@
+trigger OppTrigger on Opportunity (after insert, before update) {
+
+  Map<String, Id> typeMap = New Map<ID,RecordType>();
+  for(RecordType rt: [Select ID, DeveloperName From RecordType Where sObjectType = 'Opportunity']) {
+    typeMap.put(rt.DeveloperName, rt.id);
+  }
+
+  for (Opportunity opp : trigger.new)  {        
+      // And the Agreement Category on the record = TEST
+      if (opp.Stage__c == 'Negotiation/Review') {
+        // Then automatically change the Record Type to ReadOnly RecordType
+        opp.RecordTypeID = typeMap.get('ReadOnly'); 
+      }         
+  }
+}
